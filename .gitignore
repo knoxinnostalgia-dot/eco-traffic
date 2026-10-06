@@ -1,7 +1,0 @@
-*.exe
-*.o
-*.obj
-*.pdb
-*.ilk
-*.dSYM
-.DS_Store
