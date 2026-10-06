@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#fff8f6">
+  <title>A little question for you</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: "Avenir Next", Avenir, "Segoe UI", sans-serif;
+      color: #503b49;
+      background: #fff8f6;
+      font-synthesis: none;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-width: 320px;
+      min-height: 100vh;
+      margin: 0;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      background:
+        radial-gradient(ellipse at 12% 18%, #ffe7e1 0, transparent 32%),
+        radial-gradient(ellipse at 88% 82%, #f5e6f3 0, transparent 34%),
+        #fff8f6;
+    }
+
+    .scene {
+      position: relative;
+      display: grid;
+      width: min(100%, 780px);
+      min-height: 100vh;
+      place-items: center;
+      padding: 32px 20px;
+      isolation: isolate;
+    }
+
+    .sparkle {
+      position: absolute;
+      z-index: -1;
+      color: #e9a8ad;
+      font-family: Georgia, serif;
+      animation: float 5s ease-in-out infinite;
+      user-select: none;
+    }
+
+    .sparkle-one { top: 15%; left: 12%; font-size: 30px; }
+    .sparkle-two { top: 25%; right: 10%; font-size: 22px; animation-delay: -2s; }
+    .sparkle-three { bottom: 16%; left: 20%; font-size: 20px; animation-delay: -1s; }
+    .sparkle-four { right: 17%; bottom: 19%; font-size: 32px; animation-delay: -3s; }
+
+    .card {
+      width: min(100%, 550px);
+      padding: clamp(34px, 7vw, 62px) clamp(22px, 7vw, 64px) 42px;
+      border: 1px solid rgba(229, 190, 190, .58);
+      border-radius: 30px;
+      background: rgba(255, 255, 255, .83);
+      box-shadow: 0 24px 80px rgba(116, 67, 88, .12), 0 4px 14px rgba(116, 67, 88, .05);
+      text-align: center;
+      backdrop-filter: blur(12px);
+      animation: arrive .75s cubic-bezier(.2,.8,.2,1) both;
+    }
+
+    .heart-mark {
+      display: grid;
+      width: 62px;
+      height: 62px;
+      margin: 0 auto 25px;
+      place-items: center;
+      border-radius: 22px;
+      background: #fff0ed;
+      color: #d96878;
+      font-size: 28px;
+      transform: rotate(-8deg);
+    }
+
+    .eyebrow {
+      margin: 0 0 14px;
+      color: #b46e7a;
+      font-size: .75rem;
+      font-weight: 750;
+      letter-spacing: .19em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      color: #493542;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(2.6rem, 8vw, 4.1rem);
+      font-weight: 500;
+      letter-spacing: -.055em;
+      line-height: 1.03;
+    }
+
+    h1 span {
+      display: block;
+      color: #d16e7e;
+      font-style: italic;
+    }
+
+    .message {
+      min-height: 3.25em;
+      margin: 22px auto 29px;
+      color: #887782;
+      font-size: 1rem;
+      line-height: 1.7;
+    }
+
+    .choices {
+      display: flex;
+      min-height: 74px;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+    }
+
+    button {
+      border: 0;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform .28s cubic-bezier(.2,.8,.2,1), box-shadow .2s ease, background .2s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    button:focus-visible {
+      outline: 3px solid #a4556a;
+      outline-offset: 5px;
+    }
+
+    .yes-button {
+      position: relative;
+      z-index: 1;
+      padding: 16px 30px;
+      border-radius: 999px;
+      background: #d87582;
+      box-shadow: 0 9px 20px rgba(195, 91, 112, .23);
+      color: white;
+      font-size: 1rem;
+      transform: scale(var(--yes-scale, 1));
+      transform-origin: center;
+    }
+
+    .yes-button:hover {
+      background: #c96374;
+      box-shadow: 0 12px 24px rgba(195, 91, 112, .3);
+    }
+
+    .no-button {
+      position: relative;
+      z-index: 2;
+      padding: 13px 20px;
+      border: 1px solid #eadfe4;
+      border-radius: 999px;
+      background: #fff;
+      color: #8b7c86;
+      font-size: .92rem;
+      transform: scale(var(--no-scale, 1));
+      transform-origin: center;
+    }
+
+    .no-button:hover { background: #fff8f8; }
+
+    .footnote {
+      margin: 30px 0 0;
+      color: #b4a6af;
+      font-size: .76rem;
+    }
+
+    .celebration .heart-mark {
+      animation: heartbeat .8s ease-in-out infinite alternate;
+    }
+
+    .celebration h1 { font-size: clamp(2.5rem, 8vw, 3.7rem); }
+    .celebration .choices, .celebration .footnote { display: none; }
+    .celebration .message { margin-bottom: 0; }
+
+    .confetti {
+      position: fixed;
+      z-index: 5;
+      top: -20px;
+      width: 10px;
+      height: 14px;
+      border-radius: 3px;
+      pointer-events: none;
+      animation: fall var(--duration) ease-in forwards;
+    }
+
+    @keyframes arrive {
+      from { opacity: 0; transform: translateY(15px) scale(.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0); }
+      50% { transform: translateY(-12px) rotate(9deg); }
+    }
+
+    @keyframes heartbeat {
+      to { transform: rotate(-8deg) scale(1.12); }
+    }
+
+    @keyframes fall {
+      to { transform: translate3d(var(--drift), 110vh, 0) rotate(720deg); opacity: .85; }
+    }
+
+    @media (max-width: 480px) {
+      .scene { padding: 20px 16px; }
+      .card { border-radius: 24px; }
+      .choices { gap: 12px; }
+      .yes-button { padding: 15px 23px; }
+      .no-button { padding: 12px 16px; }
+      .sparkle-one { left: 5%; }
+      .sparkle-two { right: 5%; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="scene">
+    <span class="sparkle sparkle-one" aria-hidden="true">✦</span>
+    <span class="sparkle sparkle-two" aria-hidden="true">♡</span>
+    <span class="sparkle sparkle-three" aria-hidden="true">✧</span>
+    <span class="sparkle sparkle-four" aria-hidden="true">♡</span>
+
+    <section class="card" id="question-card" aria-labelledby="question-title">
+      <div class="heart-mark" aria-hidden="true">♥</div>
+      <p class="eyebrow">A little question</p>
+      <h1 id="question-title">Will you be <span>my girlfriend?</span></h1>
+      <p class="message" id="message" aria-live="polite">Every day is a little brighter with you in it. So, what do you say?</p>
+      <div class="choices" id="choices">
+        <button class="yes-button" id="yes-button" type="button">Yes, absolutely!</button>
+        <button class="no-button" id="no-button" type="button">No</button>
+      </div>
+      <p class="footnote" id="footnote">Choose honestly... but maybe choose wisely ♡</p>
+    </section>
+  </main>
+
+  <script>
+    const card = document.querySelector("#question-card");
+    const message = document.querySelector("#message");
+    const yesButton = document.querySelector("#yes-button");
+    const noButton = document.querySelector("#no-button");
+    const footnote = document.querySelector("#footnote");
+    let noClicks = 0;
+
+    const playfulMessages = [
+      "Hmm, are you sure? My heart is still hoping for a yes.",
+      "The yes button is looking pretty good right about now...",
+      "I can do this all day. That yes button, though? Growing on you.",
+      "Okay, I think the universe is trying to tell us something ♡",
+      "There's really only one button left that fits on this card!"
+    ];
+
+    noButton.addEventListener("click", () => {
+      noClicks += 1;
+      const yesScale = Math.min(2.4, 1 + noClicks * 0.16);
+      const noScale = Math.max(0.14, 1 - noClicks * 0.12);
+      yesButton.style.setProperty("--yes-scale", yesScale);
+      noButton.style.setProperty("--no-scale", noScale);
+      message.textContent = playfulMessages[Math.min(noClicks - 1, playfulMessages.length - 1)];
+      footnote.textContent = "No worries, take your time... ♡";
+    });
+
+    yesButton.addEventListener("click", () => {
+      card.classList.add("celebration");
+      message.textContent = "You just made me the happiest person in the world. I can't wait for all our little adventures together! ♡";
+      document.querySelector("#question-title").innerHTML = "It's a <span>date!</span>";
+      document.querySelector(".eyebrow").textContent = "Best answer ever";
+      launchConfetti();
+    });
+
+    function launchConfetti() {
+      const colors = ["#d87582", "#f4c96b", "#9ec9a8", "#c5a8d4", "#f49f91"];
+      for (let i = 0; i < 70; i += 1) {
+        const piece = document.createElement("span");
+        piece.className = "confetti";
+        piece.setAttribute("aria-hidden", "true");
+        piece.style.left = `${Math.random() * 100}vw`;
+        piece.style.backgroundColor = colors[i % colors.length];
+        piece.style.setProperty("--duration", `${2.2 + Math.random() * 2.4}s`);
+        piece.style.setProperty("--drift", `${Math.random() * 180 - 90}px`);
+        piece.style.animationDelay = `${Math.random() * .55}s`;
+        document.body.appendChild(piece);
+        piece.addEventListener("animationend", () => piece.remove(), { once: true });
+      }
+    }
+  </script>
+</body>
+</html>
